@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"testify-webserver/models"
 	"net/http"
 	"strings"
+	"testify-webserver/models"
 
 	"github.com/gin-gonic/gin"
 )
