@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"database/sql"
+	"net/http"
 	"testify-webserver/database"
 	"testify-webserver/models"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
