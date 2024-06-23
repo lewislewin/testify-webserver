@@ -2,7 +2,7 @@ package routes
 
 import (
 	"testify-webserver/controllers"
-	"testify-webserver/middlewears"
+	"testify-webserver/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
