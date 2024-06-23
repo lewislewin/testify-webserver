@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"database/sql"
+	"net/http"
+	"testify-webserver/auth"
 	"testify-webserver/database"
 	"testify-webserver/models"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -53,7 +54,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := models.GenerateJWT(user.ID)
+	token, err := auth.GenerateJWT(user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
 		return

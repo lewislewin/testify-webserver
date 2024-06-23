@@ -19,10 +19,15 @@ type Client struct {
 }
 
 type EndpointClient interface {
+	// Authentication
 	AuthenticateWithEndpoint() (bool, error)
+
+	// Product Methods
 	GetProducts() (http.Response, error)
 	ValidateProduct() (bool, error)
 	ValidateBulkProducts() (bool, error)
+
+	// Order Methods
 	CreateOrder() (http.Response, error)
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"testify-webserver/database"
+	"testify-webserver/middlewares"
 	"testify-webserver/routes"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,9 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	// Use logging middleware
+	r.Use(middlewares.LogMiddleware())
 
 	// Initialize the database
 	database.InitDB()

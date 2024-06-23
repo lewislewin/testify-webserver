@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 	"strings"
-	"testify-webserver/models"
+	"testify-webserver/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +18,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-		claims, err := models.ValidateJWT(tokenString)
+		claims, err := auth.ValidateJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
