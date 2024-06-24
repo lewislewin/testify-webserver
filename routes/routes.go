@@ -19,6 +19,13 @@ func SetupRoutes(r *gin.Engine) {
 	r.DELETE("/users/:id", controllers.DeleteUser)
 	r.GET("/users", controllers.ListUsers)
 
+	// Endpoint routes
+	r.POST("/endpoints", controllers.CreateEndpoint)
+	r.GET("/endpoints/:id", controllers.GetEndpoint)
+	r.PUT("/endpoints/:id", controllers.UpdateEndpoint)
+	r.DELETE("/endpoints/:id", controllers.DeleteEndpoint)
+	r.GET("/endpoints", controllers.ListEndpoints)
+
 	// Protected routes
 	protected := r.Group("/", middlewares.AuthMiddleware())
 	{
