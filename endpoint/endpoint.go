@@ -58,8 +58,6 @@ func NewClient(ep Endpoint) (*Client, error) {
 	return client, nil
 }
 
-func getCredentials()
-
 func (c *Client) AuthoriseConnectionToEndpoint() error {
 	fmt.Println("I'm in AuthoriseConnectionToEndpoint()")
 
