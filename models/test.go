@@ -5,8 +5,8 @@ import (
 )
 
 type Test struct {
-	InternalID int
-	ID         uuid.UUID
-	TestPlanID uuid.UUID
-	TestData   string
+	InternalID  int
+	ID          uuid.UUID `json:"id"`
+	TestSuiteID uuid.UUID `json:"test_suite_id" binding:"required"`
+	TestData    string    `json:"test_data" binding:"required"`
 }
