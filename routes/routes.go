@@ -7,28 +7,54 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO: Prune for the routes that are actually going to be needed
 func SetupRoutes(r *gin.Engine) {
 	// Auth routes
 	r.POST("/auth/login", controllers.Login)
 	r.POST("/auth/register", controllers.Register)
 
-	// User routes
-	r.POST("/users", controllers.CreateUser)
-	r.GET("/users/:id", controllers.GetUser)
-	r.PUT("/users/:id", controllers.UpdateUser)
-	r.DELETE("/users/:id", controllers.DeleteUser)
-	r.GET("/users", controllers.ListUsers)
-
-	// Endpoint routes
-	r.POST("/endpoints", controllers.CreateEndpoint)
-	r.GET("/endpoints/:id", controllers.GetEndpoint)
-	r.PUT("/endpoints/:id", controllers.UpdateEndpoint)
-	r.DELETE("/endpoints/:id", controllers.DeleteEndpoint)
-	r.GET("/endpoints", controllers.ListEndpoints)
-
 	// Protected routes
-	protected := r.Group("/", middlewares.AuthMiddleware())
+	protected := r.Group("/")
+	protected.Use(middlewares.AuthMiddleware())
 	{
+		// User routes
+		protected.POST("/users", controllers.CreateUser)
+		protected.GET("/users/:id", controllers.GetUser)
+		protected.PUT("/users/:id", controllers.UpdateUser)
+		protected.DELETE("/users/:id", controllers.DeleteUser)
+		protected.GET("/users", controllers.ListUsers)
+
+		// Endpoint routes
+		protected.POST("/endpoints", controllers.CreateEndpoint)
+		protected.GET("/endpoints/:id", controllers.GetEndpoint)
+		protected.PUT("/endpoints/:id", controllers.UpdateEndpoint)
+		protected.DELETE("/endpoints/:id", controllers.DeleteEndpoint)
+		protected.GET("/endpoints", controllers.ListEndpoints)
+
+		// Company routes
+		protected.GET("/companies/:id", controllers.GetCompany)
+		protected.PUT("/companies/:id", controllers.UpdateCompany)
+		protected.DELETE("/companies/:id", controllers.DeleteCompany)
+
+		// TestSuite routes
+		protected.POST("/testsuites", controllers.CreateTestSuite)
+		protected.GET("/testsuites/:id", controllers.GetTestSuite)
+		protected.PUT("/testsuites/:id", controllers.UpdateTestSuite)
+		protected.DELETE("/testsuites/:id", controllers.DeleteTestSuite)
+		protected.GET("/testsuites", controllers.ListTestSuites)
+		protected.GET("/testsuites/:tsid/testresults", controllers.ListTestResults)
+		protected.GET("/testsuites/:tsid/tests", controllers.ListTests)
+
+		// Test routes TODO: this looks weird! I think it all needs to be /testsuites
+		protected.POST("/testsuites/:tsid/tests", controllers.CreateTest)
+		protected.GET("/tests/:id", controllers.GetTest)
+		protected.PUT("/tests/:id", controllers.UpdateTest)
+		protected.DELETE("/tests/:id", controllers.DeleteTest)
+
+		// TestResult routes
+		protected.GET("/testresults/:id", controllers.GetTestResult)
+
+		// Other protected routes
 		protected.GET("/me", controllers.GetCurrentUser)
 	}
 }
