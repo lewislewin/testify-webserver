@@ -42,8 +42,8 @@ func SetupRoutes(r *gin.Engine) {
 		protected.PUT("/testsuites/:id", controllers.UpdateTestSuite)
 		protected.DELETE("/testsuites/:id", controllers.DeleteTestSuite)
 		protected.GET("/testsuites", controllers.ListTestSuites)
-		protected.GET("/testsuites/:tsid/testresults", controllers.ListTestResults)
-		protected.GET("/testsuites/:tsid/tests", controllers.ListTests)
+		protected.GET("/testsuites/:id/testresults", controllers.ListTestResults)
+		protected.GET("/testsuites/:id/tests", controllers.ListTests)
 
 		// Test routes TODO: this looks weird! I think it all needs to be /testsuites
 		protected.POST("/testsuites/:tsid/tests", controllers.CreateTest)
