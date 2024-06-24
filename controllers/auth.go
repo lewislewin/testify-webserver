@@ -13,6 +13,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Registration controller
+// This function is to register a new USER and COMPANY, users can be added to a company once created by a company admin
 func Register(c *gin.Context) {
 	log.Println("Register called")
 	var input models.User
@@ -44,6 +46,7 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
 
+// This function is for any user to login, not just a company
 func Login(c *gin.Context) {
 	log.Println("Login called")
 	var input struct {
