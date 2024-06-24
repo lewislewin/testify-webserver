@@ -2,6 +2,7 @@ package platforms
 
 import (
 	"fmt"
+	"testify-webserver/credentials"
 	"testify-webserver/models"
 	"testify-webserver/platforms/bigcommerce"
 	"testify-webserver/platforms/shopify"
@@ -29,7 +30,7 @@ func EndpointFactory(ep models.Endpoint) (Platform, error) {
 		return nil, fmt.Errorf("unsupported endpoint type")
 	}
 
-	credentials, err := GetCredentialById(string(ep.CredentialID.String()))
+	credentials, err := credentials.GetCredentialById(string(ep.CredentialID.String()))
 	if err != nil {
 		return nil, err
 	}
@@ -39,13 +40,4 @@ func EndpointFactory(ep models.Endpoint) (Platform, error) {
 		return nil, err
 	}
 	return endpoint, nil
-}
-
-func GetCredentialById(id string) (map[string]string, error) {
-	credentials := map[string]string{
-		"access_token": "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",
-		"store_domain": "d46136-ae.myshopify.com",
-	}
-
-	return credentials, nil
 }
