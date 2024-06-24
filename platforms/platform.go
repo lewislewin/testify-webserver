@@ -15,12 +15,12 @@ type Platform interface {
 
 func EndpointFactory(ep models.Endpoint) (Platform, error) {
 	var endpoint Platform
-	endpoint_type, err := services.GetEndpointType(ep.EndpointType.String())
+	endpointType, err := services.GetEndpointType(ep.EndpointType.String())
 	if err != nil {
 		return nil, err
 	}
 
-	switch endpoint_type.Name {
+	switch endpointType.Name {
 	case "shopify":
 		endpoint = &shopify.Shopify{}
 	case "bigcommerce":
