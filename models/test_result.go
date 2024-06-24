@@ -1,8 +1,10 @@
 package models
 
+import "github.com/google/uuid"
+
 type TestResult struct {
-	ID       int
-	TestID   int
-	Status   int
-	Response string
+	InternalID int
+	ID         uuid.UUID
+	TestPlanID uuid.UUID
+	TestResult string
 }

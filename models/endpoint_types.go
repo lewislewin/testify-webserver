@@ -2,7 +2,7 @@ package models
 
 import "github.com/google/uuid"
 
-type Permission struct {
+type EndpointType struct {
 	InternalID int
 	ID         uuid.UUID
 	Name       string

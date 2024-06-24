@@ -2,11 +2,9 @@ package models
 
 import "github.com/google/uuid"
 
-type Endpoint struct {
+type CompanyPermission struct {
 	InternalID   int
 	ID           uuid.UUID
-	Name         string
-	CredentialID uuid.UUID
 	CompanyID    uuid.UUID
-	EndpointType uuid.UUID
+	PermissionID uuid.UUID
 }

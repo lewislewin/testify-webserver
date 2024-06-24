@@ -54,7 +54,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := auth.GenerateJWT(user.ID)
+	token, err := auth.GenerateJWT(user.InternalID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
 		return

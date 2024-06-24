@@ -1,8 +1,13 @@
 package models
 
+import "github.com/google/uuid"
+
 type Company struct {
-	ID      int
-	Name    string
-	Website string
-	Email   string
+	InternalID int
+	ID         uuid.UUID
+	Name       string
+	Website    string
+	Email      string
+	OwningUser uuid.UUID
+	PlanTier   int
 }

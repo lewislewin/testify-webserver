@@ -9,7 +9,7 @@ import (
 	"testify-webserver/endpoint/shopify"
 )
 
-const ShopifyEndpointType = "shopfiy"
+const ShopifyEndpointType = "shopify"
 const BigcommerceEndpointType = "bigcommerce"
 const OtherEndpointType = "other"
 
@@ -23,12 +23,12 @@ type EndpointClient interface {
 	AuthenticateWithEndpoint() (bool, error)
 
 	// Product Methods
-	GetProducts() (http.Response, error)
+	GetProducts() (*http.Response, error)
 	ValidateProduct() (bool, error)
 	ValidateBulkProducts() (bool, error)
 
 	// Order Methods
-	CreateOrder() (http.Response, error)
+	CreateOrder(orderData map[string]interface{}) (*http.Response, error)
 }
 
 // Endpoint:
@@ -47,31 +47,32 @@ type Credentials struct {
 }
 
 func NewClient(ep Endpoint) (*Client, error) {
-
-	// ok := validateEndpoint(ep)
-	// if !ok {
-	// 	return &Client{}, fmt.Errorf("invalid endpoint")
-	// }
-
-	client := Client{
+	client := &Client{
 		Endpoint: ep,
 	}
 
 	if ep.Type == ShopifyEndpointType {
-		client.EndpointClient = shopify.NewClient(ep.Name)
+		client.EndpointClient = shopify.NewClient(ep.Name, ep.Credentials.Token)
 	}
 
-	return &client, nil
+	return client, nil
 }
+
+func getCredentials()
 
 func (c *Client) AuthoriseConnectionToEndpoint() error {
 	fmt.Println("I'm in AuthoriseConnectionToEndpoint()")
 
-	c.EndpointClient.AuthenticateWithEndpoint()
+	authenticated, err := c.EndpointClient.AuthenticateWithEndpoint()
+	if err != nil {
+		return err
+	}
+	if !authenticated {
+		return fmt.Errorf("authentication failed")
+	}
 	return nil
 }
 
-func (c *Client) GetProducts() (http.Response, error) {
-
+func (c *Client) GetProducts() (*http.Response, error) {
 	return c.EndpointClient.GetProducts()
 }
