@@ -46,7 +46,7 @@ func (s *Shopify) Authenticate(credentials map[string]string) error {
 	s.client = http.Client{Timeout: 10 * time.Second}
 
 	// Validate the connection by making a request to Shopify's API
-	resp, err := s.restRequest("GET", "shop.json", nil)
+	resp, err := s.restRequest("GET", "/shop.json", nil)
 	if err != nil {
 		return fmt.Errorf("failed to make request: %v", err)
 	}

@@ -12,6 +12,7 @@ import (
 type Platform interface {
 	Authenticate(credentials map[string]string) error
 	GetProducts() (interface{}, error)
+	CreateOrder(order interface{}) error
 }
 
 func EndpointFactory(ep models.Endpoint) (Platform, error) {
