@@ -15,7 +15,7 @@ type Platform interface {
 	CreateOrder(order interface{}) error
 }
 
-func EndpointFactory(ep models.Endpoint) (Platform, error) {
+func EndpointFactory(ep *models.Endpoint) (Platform, error) {
 	var endpoint Platform
 	endpointType, err := services.GetEndpointType(ep.EndpointType.String())
 	if err != nil {

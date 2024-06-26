@@ -81,3 +81,7 @@ func ListTestSuites() ([]models.TestSuite, error) {
 
 	return testSuites, nil
 }
+
+func RunTestSuite() (models.TestResult, error) {
+	panic("Not implemented")
+}

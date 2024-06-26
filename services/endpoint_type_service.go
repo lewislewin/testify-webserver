@@ -14,7 +14,7 @@ func CreateEndpointType(endpointType *models.EndpointType) error {
 	endpointType.ID = uuid.New()
 
 	query := "INSERT INTO endpoint_types (id, name) VALUES (?, ?)"
-	_, err := database.DB.Exec(query, endpointType.ID, endpointType.Name)
+	_, err := database.DB.Exec(query, endpointType.ID.String(), endpointType.Name)
 	if err != nil {
 		log.Printf("Error creating endpoint type: %v", err)
 		return err
