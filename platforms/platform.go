@@ -3,26 +3,25 @@ package platforms
 import (
 	"fmt"
 	"testify-webserver/credentials"
-	"testify-webserver/models"
 	"testify-webserver/platforms/bigcommerce"
 	"testify-webserver/platforms/shopify"
-	"testify-webserver/services"
 )
 
-type Platform interface {
+type Platform struct {
+	PlatformType string
+	CredentialID string
+}
+
+type PlatformClient interface {
 	Authenticate(credentials map[string]string) error
 	GetProducts() (interface{}, error)
 	CreateOrder(order interface{}) error
 }
 
-func EndpointFactory(ep *models.Endpoint) (Platform, error) {
-	var endpoint Platform
-	endpointType, err := services.GetEndpointType(ep.EndpointType.String())
-	if err != nil {
-		return nil, err
-	}
+func PlatformFactory(platform *Platform) (PlatformClient, error) {
+	var endpoint PlatformClient
 
-	switch endpointType.Name {
+	switch platform.PlatformType {
 	case "shopify":
 		endpoint = &shopify.Shopify{}
 	case "bigcommerce":
@@ -31,7 +30,7 @@ func EndpointFactory(ep *models.Endpoint) (Platform, error) {
 		return nil, fmt.Errorf("unsupported endpoint type")
 	}
 
-	credentials, err := credentials.GetCredentialById(string(ep.CredentialID.String()))
+	credentials, err := credentials.GetCredentialById(platform.CredentialID)
 	if err != nil {
 		return nil, err
 	}
@@ -41,4 +40,10 @@ func EndpointFactory(ep *models.Endpoint) (Platform, error) {
 		return nil, err
 	}
 	return endpoint, nil
+}
+
+// Generic order struct
+type Order struct {
+	ID   int
+	Name string
 }
