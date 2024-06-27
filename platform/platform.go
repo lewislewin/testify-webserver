@@ -3,6 +3,7 @@ package platform
 import (
 	"fmt"
 	"net/http"
+	"testify-webserver/platform_implementations/bigcommerce"
 	"testify-webserver/platform_implementations/shopify"
 )
 
@@ -37,6 +38,8 @@ func NewClient(platform Platform) (*Client, error) {
 	case ShopifyEndpointType:
 		client.PlatformClient = shopify.NewClient(platform.CredentialID)
 	// Add cases for other platforms as needed
+	case BigcommerceEndpointType:
+		client.PlatformClient = bigcommerce.NewClient(platform.CredentialID)
 	default:
 		return nil, fmt.Errorf("unsupported platform type: %s", platform.PlatformType)
 	}
