@@ -1,40 +1,43 @@
 package shopify
 
 type Order struct {
-	LineItems       []LineItem     `json:"line_items"`
-	Email           string         `json:"email"`
-	Phone           string         `json:"phone"`
-	BillingAddress  Address        `json:"billing_address"`
-	ShippingAddress Address        `json:"shipping_address"`
-	Transactions    []Transaction  `json:"transactions"`
-	FinancialStatus string         `json:"financial_status"`
-	DiscountCodes   []DiscountCode `json:"discount_codes"`
+	ID              int            `json:"id,omitempty"`
+	LineItems       []LineItem     `json:"line_items,omitempty"`
+	Email           string         `json:"email,omitempty"`
+	Phone           string         `json:"phone,omitempty"`
+	BillingAddress  Address        `json:"billing_address,omitempty"`
+	ShippingAddress Address        `json:"shipping_address,omitempty"`
+	Transactions    []Transaction  `json:"transactions,omitempty"`
+	FinancialStatus string         `json:"financial_status,omitempty"`
+	DiscountCodes   []DiscountCode `json:"discount_codes,omitempty"`
 }
 
 type LineItem struct {
-	VariantID int `json:"variant_id"`
-	Quantity  int `json:"quantity"`
+	VariantID int     `json:"variant_id,omitempty"`
+	Title     string  `json:"title,omitempty"`
+	Quantity  int     `json:"quantity,omitempty"`
+	Price     float64 `json:"price,omitempty"`
 }
 
 type Address struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Address1  string `json:"address1"`
-	Phone     string `json:"phone"`
-	City      string `json:"city"`
-	Province  string `json:"province"`
-	Country   string `json:"country"`
-	Zip       string `json:"zip"`
+	FirstName string `json:"first_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Address1  string `json:"address1,omitempty"`
+	Phone     string `json:"phone,omitempty"`
+	City      string `json:"city,omitempty"`
+	Province  string `json:"province,omitempty"`
+	Country   string `json:"country,omitempty"`
+	Zip       string `json:"zip,omitempty"`
 }
 
 type Transaction struct {
-	Kind   string  `json:"kind"`
-	Status string  `json:"status"`
-	Amount float64 `json:"amount"`
+	Kind   string  `json:"kind,omitempty"`
+	Status string  `json:"status,omitempty"`
+	Amount float64 `json:"amount,omitempty"`
 }
 
 type DiscountCode struct {
-	Code   string `json:"code"`
-	Amount string `json:"amount"`
-	Type   string `json:"type"`
+	Code   string `json:"code,omitempty"`
+	Amount string `json:"amount,omitempty"`
+	Type   string `json:"type,omitempty"`
 }

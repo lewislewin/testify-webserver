@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"testify-webserver/credentials"
 	"time"
@@ -56,7 +57,6 @@ func (c *Client) restRequest(method, endpoint string, body interface{}) (*http.R
 
 func (c *Client) Authenticate() error {
 	fmt.Println("I'm in pkg shopify, Authenticate()")
-	// Validate the connection by making a request to Shopify's API
 	resp, err := c.restRequest("GET", "/shop.json", nil)
 	if err != nil {
 		return fmt.Errorf("failed to make request: %v", err)
@@ -71,15 +71,36 @@ func (c *Client) Authenticate() error {
 }
 
 func (c *Client) ValidateProducts() (*http.Response, error) {
-	fmt.Println("I'm in pkg shopify, GetProducts()")
+	fmt.Println("I'm in pkg shopify, ValidateProducts()")
 	return c.restRequest("GET", "/products.json", nil)
 }
 
 func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {
 	fmt.Println("I'm in pkg shopify, CreateOrder()")
-	shopifyOrder, ok := order.(Order)
-	if !ok {
-		return nil, fmt.Errorf("invalid order type for Shopify")
+	orderData := map[string]interface{}{
+		"order": order,
 	}
-	return c.restRequest("POST", "/orders.json", shopifyOrder)
+
+	resp, err := c.restRequest("POST", "/orders.json", orderData)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusCreated {
+		fmt.Printf("Failed to create order with status code: %d\n", resp.StatusCode)
+		fmt.Printf("Response Body: %s\n", string(body))
+		return resp, fmt.Errorf("failed to create order with status code: %d", resp.StatusCode)
+	}
+
+	fmt.Println("Response Body:", string(body))
+	fmt.Println("Status Code:", resp.StatusCode)
+	fmt.Println("Headers:", resp.Header)
+
+	return resp, nil
 }

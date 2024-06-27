@@ -44,12 +44,13 @@ func main() {
 	order := shopify.Order{
 		LineItems: []shopify.LineItem{
 			{
-				VariantID: 447654529,
+				VariantID: 9065378349402,
 				Quantity:  1,
+				Price:     50,
+				Title:     "Product",
 			},
 		},
 		Email: "jane@example.com",
-		Phone: "18885551234",
 		BillingAddress: shopify.Address{
 			FirstName: "John",
 			LastName:  "Smith",
@@ -72,7 +73,7 @@ func main() {
 		},
 		Transactions: []shopify.Transaction{
 			{
-				Kind:   "sale",
+				Kind:   "amex",
 				Status: "success",
 				Amount: 50.0,
 			},
@@ -80,10 +81,12 @@ func main() {
 		FinancialStatus: "paid",
 	}
 
-	_, err = ep.CreateOrder(order)
+	resp, err := ep.CreateOrder(order)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create order: %v", err))
 	}
+
+	fmt.Println("Order created successfully with status code:", resp.StatusCode)
 
 	// Get products
 	products, err := ep.ValidateProducts()
