@@ -70,7 +70,7 @@ func (c *Client) Authenticate() error {
 	return nil
 }
 
-func (c *Client) GetProducts() (*http.Response, error) {
+func (c *Client) ValidateProducts() (*http.Response, error) {
 	fmt.Println("I'm in pkg shopify, GetProducts()")
 	return c.restRequest("GET", "/products.json", nil)
 }

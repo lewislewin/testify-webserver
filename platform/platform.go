@@ -25,7 +25,7 @@ type Platform struct {
 
 type PlatformClient interface {
 	Authenticate() error
-	GetProducts() (*http.Response, error)
+	ValidateProducts() (*http.Response, error)
 	CreateOrder(order interface{}) (*http.Response, error)
 }
 
@@ -52,8 +52,8 @@ func (c *Client) Authenticate() error {
 	return c.PlatformClient.Authenticate()
 }
 
-func (c *Client) GetProducts() (*http.Response, error) {
-	return c.PlatformClient.GetProducts()
+func (c *Client) ValidateProducts() (*http.Response, error) {
+	return c.PlatformClient.ValidateProducts()
 }
 
 func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {

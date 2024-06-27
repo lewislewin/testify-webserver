@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// Get products
-	products, err := ep.GetProducts()
+	products, err := ep.ValidateProducts()
 	if err != nil {
 		panic(fmt.Sprintf("Failed to get products: %v", err))
 	}
