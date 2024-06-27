@@ -37,7 +37,6 @@ func NewClient(platform Platform) (*Client, error) {
 	switch platform.PlatformType {
 	case ShopifyEndpointType:
 		client.PlatformClient = shopify.NewClient(platform.CredentialID)
-	// Add cases for other platforms as needed
 	case BigcommerceEndpointType:
 		client.PlatformClient = bigcommerce.NewClient(platform.CredentialID)
 	default:

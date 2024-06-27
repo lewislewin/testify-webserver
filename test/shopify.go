@@ -5,6 +5,7 @@ import (
 	"testify-webserver/database"
 	"testify-webserver/models"
 	"testify-webserver/platform"
+	"testify-webserver/platform_implementations/shopify"
 	"testify-webserver/services"
 
 	"github.com/google/uuid"
@@ -39,20 +40,47 @@ func main() {
 		panic(fmt.Sprintf("Failed to authenticate: %v", err))
 	}
 
-	// Create an order (example order data should be passed)
-	orderData := map[string]interface{}{
-		"order": map[string]interface{}{
-			"line_items": []map[string]interface{}{
-				{
-					"title":    "Example Item",
-					"price":    "10.00",
-					"quantity": 1,
-				},
+	// Create a Shopify order
+	order := shopify.Order{
+		LineItems: []shopify.LineItem{
+			{
+				VariantID: 447654529,
+				Quantity:  1,
 			},
 		},
+		Email: "jane@example.com",
+		Phone: "18885551234",
+		BillingAddress: shopify.Address{
+			FirstName: "John",
+			LastName:  "Smith",
+			Address1:  "123 Fake Street",
+			Phone:     "555-555-5555",
+			City:      "Fakecity",
+			Province:  "Ontario",
+			Country:   "Canada",
+			Zip:       "K2P 1L4",
+		},
+		ShippingAddress: shopify.Address{
+			FirstName: "Jane",
+			LastName:  "Smith",
+			Address1:  "123 Fake Street",
+			Phone:     "777-777-7777",
+			City:      "Fakecity",
+			Province:  "Ontario",
+			Country:   "Canada",
+			Zip:       "K2P 1L4",
+		},
+		Transactions: []shopify.Transaction{
+			{
+				Kind:   "sale",
+				Status: "success",
+				Amount: 50.0,
+			},
+		},
+		FinancialStatus: "paid",
 	}
 
-	_, err = ep.CreateOrder(orderData)
+	_, err = ep.CreateOrder(order)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create order: %v", err))
 	}

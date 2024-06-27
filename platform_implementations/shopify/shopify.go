@@ -77,5 +77,9 @@ func (c *Client) ValidateProducts() (*http.Response, error) {
 
 func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {
 	fmt.Println("I'm in pkg shopify, CreateOrder()")
-	return c.restRequest("POST", "/orders.json", order)
+	shopifyOrder, ok := order.(Order)
+	if !ok {
+		return nil, fmt.Errorf("invalid order type for Shopify")
+	}
+	return c.restRequest("POST", "/orders.json", shopifyOrder)
 }
