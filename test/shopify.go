@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"testify-webserver/database"
-	"testify-webserver/models"
-	"testify-webserver/platform"
-	"testify-webserver/platform_implementations/shopify"
-	"testify-webserver/services"
+
+	"github.com/lewislewin/testify-webserver/internal/database"
+	"github.com/lewislewin/testify-webserver/internal/models"
+	"github.com/lewislewin/testify-webserver/internal/platform"
+	"github.com/lewislewin/testify-webserver/internal/platform_implementations/shopify"
+	"github.com/lewislewin/testify-webserver/internal/services"
 
 	"github.com/google/uuid"
 )
