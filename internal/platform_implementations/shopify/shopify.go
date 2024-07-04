@@ -57,7 +57,6 @@ func (c *Client) restRequest(method, endpoint string, body interface{}) (*http.R
 }
 
 func (c *Client) Authenticate() error {
-	fmt.Println("I'm in pkg shopify, Authenticate()")
 	resp, err := c.restRequest("GET", "/shop.json", nil)
 	if err != nil {
 		return fmt.Errorf("failed to make request: %v", err)
@@ -72,12 +71,10 @@ func (c *Client) Authenticate() error {
 }
 
 func (c *Client) ValidateProducts() (*http.Response, error) {
-	fmt.Println("I'm in pkg shopify, ValidateProducts()")
 	return c.restRequest("GET", "/products.json", nil)
 }
 
 func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {
-	fmt.Println("I'm in pkg shopify, CreateOrder()")
 	orderData := map[string]interface{}{
 		"order": order,
 	}
@@ -104,4 +101,8 @@ func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {
 	fmt.Println("Headers:", resp.Header)
 
 	return resp, nil
+}
+
+func (c *Client) GetOrder(id int) (*http.Response, error) {
+	return c.restRequest("GET", fmt.Sprintf("/orders/%v.json", id), nil)
 }

@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 
 	"github.com/lewislewin/testify-webserver/internal/database"
 	"github.com/lewislewin/testify-webserver/internal/models"
@@ -17,12 +20,19 @@ func main() {
 	database.InitDB()
 
 	// Create an endpoint type for Shopify
-	endpointTypeUUID, _ := uuid.Parse("fa4b981a-6ebb-48e5-bd70-d781cce29d58")
-	services.CreateEndpointType(&models.EndpointType{
+	endpointTypeUUID, err := uuid.Parse("fa4b981a-6ebb-48e5-bd70-d781cce29d58")
+	if err != nil {
+		log.Fatalf("Failed to parse UUID: %v", err)
+	}
+
+	err = services.CreateEndpointType(&models.EndpointType{
 		InternalID: 1,
 		ID:         endpointTypeUUID,
 		Name:       "shopify",
 	})
+	if err != nil {
+		log.Fatalf("Failed to create endpoint type: %v", err)
+	}
 
 	// Create a new client for Shopify platform
 	platformType := platform.Platform{
@@ -32,131 +42,68 @@ func main() {
 
 	ep, err := platform.NewClient(platformType)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to create platform client: %v", err))
+		log.Fatalf("Failed to create platform client: %v", err)
 	}
 
 	// Authenticate the client
 	err = ep.Authenticate()
 	if err != nil {
-		panic(fmt.Sprintf("Failed to authenticate: %v", err))
+		log.Fatalf("Failed to authenticate: %v", err)
 	}
 
-	// Create a Shopify order
-	order := shopify.Order{
-		ID:                    6098106057050,
-		Email:                 "jane@example.com",
-		ContactEmail:          "jane@example.com",
-		FinancialStatus:       "paid",
-		Currency:              "GBP",
-		SubtotalPrice:         "220.64",
-		TotalDiscounts:        "32.36",
-		TotalPrice:            "222.64",
-		CurrentSubtotalPrice:  "191.86",
-		CurrentTotalDiscounts: "28.14",
-		CurrentTotalPrice:     "193.86",
-		CurrentTotalTax:       "0.00",
-		Confirmed:             true,
-		TotalLineItemsPrice:   "253.00",
-		TotalOutstanding:      "0.00",
-		TotalShippingPriceSet: shopify.PriceSet{
-			ShopMoney: shopify.Money{
-				Amount:       "2.00",
-				CurrencyCode: "GBP",
-			},
-			PresentmentMoney: shopify.Money{
-				Amount:       "2.00",
-				CurrencyCode: "GBP",
-			},
-		},
-		DiscountCodes: []shopify.DiscountCode{
-			{
-				Code:   "dtest",
-				Amount: "2.00",
-				Type:   "fixed_amount",
-			},
-			{
-				Code:   "B",
-				Amount: "30.36",
-				Type:   "percentage",
-			},
-		},
-		Tags:        "tag2, testtag",
-		Test:        true,
-		OrderNumber: 1007,
-		BillingAddress: shopify.Address{
-			FirstName: "Jane",
-			LastName:  "Smith",
-			Address1:  "123 Fake Street",
-			Phone:     "+447454333056",
-			City:      "Fakecity",
-			Province:  "London",
-			Country:   "UK",
-			Zip:       "EC1A 1BB",
-		},
-		ShippingAddress: shopify.Address{
-			FirstName: "Jane",
-			LastName:  "Smith",
-			Address1:  "123 Fake Street",
-			Phone:     "+44 777 777 7777",
-			City:      "Fakecity",
-			Province:  "London",
-			Country:   "UK",
-			Zip:       "EC1A 1BB",
-		},
-		LineItems: []shopify.LineItem{
-			{
-				VariantID: 48478204526938,
-				Title:     "Oh no - Medium",
-				Quantity:  1,
-				Price:     "44.00",
-			},
-			{
-				VariantID: 48478204559706,
-				Title:     "Oh no - Large",
-				Quantity:  1,
-				Price:     "33.00",
-			},
-			{
-				VariantID: 48478204592474,
-				Title:     "Oh no - Small",
-				Quantity:  4,
-				Price:     "44.00",
-			},
-			{
-				VariantID: 48478171398490,
-				Title:     "Test product two",
-				Quantity:  1,
-				Price:     "0.00",
-			},
-			{
-				VariantID: 48478322786650,
-				Title:     "Test product two 2",
-				Quantity:  1,
-				Price:     "0.00",
-			},
-		},
-		Transactions: []shopify.Transaction{
-			{
-				Kind:    "capture",
-				Status:  "success",
-				Amount:  "222.64",
-				Gateway: "visa",
-			},
-		},
-	}
-
-	resp, err := ep.CreateOrder(order)
+	// Get an order
+	resp, err := ep.GetOrder(6102131802458)
 	if err != nil {
-		panic(fmt.Sprintf("Failed to create order: %v", err))
+		log.Fatalf("Failed to get order: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Read and log the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Failed to read response body: %v", err)
+	}
+	fmt.Printf("Response body: %s\n", body)
+
+	// Define a wrapper struct to handle the nested order data
+	var orderWrapper struct {
+		Order shopify.Order `json:"order"`
 	}
 
-	fmt.Println("Order created successfully with status code:", resp.StatusCode)
+	if err := json.Unmarshal(body, &orderWrapper); err != nil {
+		log.Fatalf("Failed to decode order response: %v", err)
+	}
+
+	order := orderWrapper.Order
+
+	// Check if order is populated
+	if isEmptyOrder(order) {
+		log.Fatalf("Order is empty: %v", order)
+	} else {
+		fmt.Printf("Retrieved order: %+v\n", order)
+	}
+
+	// Create new orders in a loop
+	for i := 0; i < 20; i++ {
+		resp, err = ep.CreateOrder(order)
+		if err != nil {
+			log.Fatalf("Failed to create order: %v", err)
+		}
+		defer resp.Body.Close()
+
+		fmt.Println("Order created successfully with status code:", resp.StatusCode)
+	}
 
 	// Get products
 	products, err := ep.ValidateProducts()
 	if err != nil {
-		panic(fmt.Sprintf("Failed to get products: %v", err))
+		log.Fatalf("Failed to get products: %v", err)
 	}
 
 	fmt.Println(products)
+}
+
+// Helper function to check if the order is empty
+func isEmptyOrder(order shopify.Order) bool {
+	return order.ID == 0 && len(order.LineItems) == 0 && len(order.DiscountCodes) == 0
 }

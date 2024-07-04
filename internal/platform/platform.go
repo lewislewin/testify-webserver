@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lewislewin/testify-webserver/internal/platform_implementations/bigcommerce"
 	"github.com/lewislewin/testify-webserver/internal/platform_implementations/shopify"
 )
 
@@ -28,6 +27,7 @@ type PlatformClient interface {
 	Authenticate() error
 	ValidateProducts() (*http.Response, error)
 	CreateOrder(order interface{}) (*http.Response, error)
+	GetOrder(id int) (*http.Response, error)
 }
 
 func NewClient(platform Platform) (*Client, error) {
@@ -38,8 +38,6 @@ func NewClient(platform Platform) (*Client, error) {
 	switch platform.PlatformType {
 	case ShopifyEndpointType:
 		client.PlatformClient = shopify.NewClient(platform.CredentialID)
-	case BigcommerceEndpointType:
-		client.PlatformClient = bigcommerce.NewClient(platform.CredentialID)
 	default:
 		return nil, fmt.Errorf("unsupported platform type: %s", platform.PlatformType)
 	}
@@ -58,4 +56,8 @@ func (c *Client) ValidateProducts() (*http.Response, error) {
 
 func (c *Client) CreateOrder(order interface{}) (*http.Response, error) {
 	return c.PlatformClient.CreateOrder(order)
+}
+
+func (c *Client) GetOrder(id int) (*http.Response, error) {
+	return c.PlatformClient.GetOrder(id)
 }
