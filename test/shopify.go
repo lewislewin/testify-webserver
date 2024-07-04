@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 
 	"github.com/lewislewin/testify-webserver/internal/database"
@@ -58,26 +56,13 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	// Read and log the response body
-	body, err := ioutil.ReadAll(resp.Body)
+	order, err := shopify.UnmarshalOrder(resp)
 	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
+		log.Fatalf("Failed to unmarshal order: %v", err)
 	}
-	fmt.Printf("Response body: %s\n", body)
-
-	// Define a wrapper struct to handle the nested order data
-	var orderWrapper struct {
-		Order shopify.Order `json:"order"`
-	}
-
-	if err := json.Unmarshal(body, &orderWrapper); err != nil {
-		log.Fatalf("Failed to decode order response: %v", err)
-	}
-
-	order := orderWrapper.Order
 
 	// Check if order is populated
-	if isEmptyOrder(order) {
+	if shopify.IsEmptyOrder(order) {
 		log.Fatalf("Order is empty: %v", order)
 	} else {
 		fmt.Printf("Retrieved order: %+v\n", order)
@@ -101,9 +86,4 @@ func main() {
 	}
 
 	fmt.Println(products)
-}
-
-// Helper function to check if the order is empty
-func isEmptyOrder(order shopify.Order) bool {
-	return order.ID == 0 && len(order.LineItems) == 0 && len(order.DiscountCodes) == 0
 }
