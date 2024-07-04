@@ -62,7 +62,7 @@ type Order struct {
 	TotalTaxSet              PriceSet              `json:"total_tax_set,omitempty"`
 	TotalTipReceived         string                `json:"total_tip_received,omitempty"`
 	TotalWeight              int                   `json:"total_weight,omitempty"`
-	Transactions             []Transaction         `json:transactions`
+	Transactions             []Transaction         `json:"transactions,omitempty"`
 	UpdatedAt                string                `json:"updated_at,omitempty"`
 	UserID                   int64                 `json:"user_id,omitempty"`
 	BillingAddress           Address               `json:"billing_address,omitempty"`
