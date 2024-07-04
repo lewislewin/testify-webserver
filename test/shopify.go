@@ -43,43 +43,106 @@ func main() {
 
 	// Create a Shopify order
 	order := shopify.Order{
-		LineItems: []shopify.LineItem{
-			{
-				VariantID: 9065378349402,
-				Quantity:  1,
-				Price:     50,
-				Title:     "Product",
+		ID:                    6098106057050,
+		Email:                 "jane@example.com",
+		ContactEmail:          "jane@example.com",
+		FinancialStatus:       "paid",
+		Currency:              "GBP",
+		SubtotalPrice:         "220.64",
+		TotalDiscounts:        "32.36",
+		TotalPrice:            "222.64",
+		CurrentSubtotalPrice:  "191.86",
+		CurrentTotalDiscounts: "28.14",
+		CurrentTotalPrice:     "193.86",
+		CurrentTotalTax:       "0.00",
+		Confirmed:             true,
+		TotalLineItemsPrice:   "253.00",
+		TotalOutstanding:      "0.00",
+		TotalShippingPriceSet: shopify.PriceSet{
+			ShopMoney: shopify.Money{
+				Amount:       "2.00",
+				CurrencyCode: "GBP",
+			},
+			PresentmentMoney: shopify.Money{
+				Amount:       "2.00",
+				CurrencyCode: "GBP",
 			},
 		},
-		Email: "jane@example.com",
+		DiscountCodes: []shopify.DiscountCode{
+			{
+				Code:   "dtest",
+				Amount: "2.00",
+				Type:   "fixed_amount",
+			},
+			{
+				Code:   "B",
+				Amount: "30.36",
+				Type:   "percentage",
+			},
+		},
+		Tags:        "tag2, testtag",
+		Test:        true,
+		OrderNumber: 1007,
 		BillingAddress: shopify.Address{
-			FirstName: "John",
+			FirstName: "Jane",
 			LastName:  "Smith",
 			Address1:  "123 Fake Street",
-			Phone:     "555-555-5555",
+			Phone:     "+447454333056",
 			City:      "Fakecity",
-			Province:  "Ontario",
-			Country:   "Canada",
-			Zip:       "K2P 1L4",
+			Province:  "London",
+			Country:   "UK",
+			Zip:       "EC1A 1BB",
 		},
 		ShippingAddress: shopify.Address{
 			FirstName: "Jane",
 			LastName:  "Smith",
 			Address1:  "123 Fake Street",
-			Phone:     "777-777-7777",
+			Phone:     "+44 777 777 7777",
 			City:      "Fakecity",
-			Province:  "Ontario",
-			Country:   "Canada",
-			Zip:       "K2P 1L4",
+			Province:  "London",
+			Country:   "UK",
+			Zip:       "EC1A 1BB",
+		},
+		LineItems: []shopify.LineItem{
+			{
+				VariantID: 48478204526938,
+				Title:     "Oh no - Medium",
+				Quantity:  1,
+				Price:     "44.00",
+			},
+			{
+				VariantID: 48478204559706,
+				Title:     "Oh no - Large",
+				Quantity:  1,
+				Price:     "33.00",
+			},
+			{
+				VariantID: 48478204592474,
+				Title:     "Oh no - Small",
+				Quantity:  4,
+				Price:     "44.00",
+			},
+			{
+				VariantID: 48478171398490,
+				Title:     "Test product two",
+				Quantity:  1,
+				Price:     "0.00",
+			},
+			{
+				VariantID: 48478322786650,
+				Title:     "Test product two 2",
+				Quantity:  1,
+				Price:     "0.00",
+			},
 		},
 		Transactions: []shopify.Transaction{
 			{
-				Kind:   "amex",
-				Status: "success",
-				Amount: 50.0,
+				Kind:    "capture",
+				Status:  "success",
+				Amount:  "222.64",
+				Gateway: "visa",
 			},
 		},
-		FinancialStatus: "paid",
 	}
 
 	resp, err := ep.CreateOrder(order)
